@@ -8,7 +8,7 @@ directories:
   processed_data: "data/03_processed"
   logs: "logs"
 
-# Primary Data Sources
+# Primary Data Sources(proteomics, genomic and proteomic data sets to be added later)
 datasets:
   MassIVE:
   # Proteomics Discovery Data
@@ -30,9 +30,9 @@ datasets:
     doi: "10.1038/s44320-023-00004-7"
     files:
       # Drug response metrics(EV3). Total protein abundance(EV4). Phosphorylation state(EV5).
-      local_path: "data/raw/"
-      local_path: "data/raw/"
-      baseline_phospho_ev5: "https://pmc.ncbi.nlm.nih.gov/articles/instance/10883282/bin/44320_2023_4_MOESM6_ESM.xlsx"
+      local_path: "data/raw/EV3.xlsx"
+      local_path: "data/raw/EV4.xlsx"
+      baseline_phospho_ev5: "data/raw/EV5.csv"
 
   depmap_broad:
   # Drug Sensitivity Benchmarks (Ready)
