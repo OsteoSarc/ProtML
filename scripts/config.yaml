@@ -11,6 +11,7 @@ directories:
 # Primary Data Sources
 datasets:
   MassIVE:
+  # Proteomics Discovery Data
     # SENT AN EMAIL REQUESTING PUBLIC RELEASE TO MASSIVE(UCSD)
     source: "https://www.mdpi.com/2073-4409/12/17/2179"
     project_accession: "MSV000091434"
@@ -18,7 +19,7 @@ datasets:
     target_extensions: [".txt", ".tsv", ".mzTab"] 
     
   zhang_chemoresponse:
-  # Ready
+  # Chemo-Resistant Hub Proteins (Ready)
     source: "https://www.frontiersin.org/journals/oncology/articles/10.3389/fonc.2025.1597750/full"
     doi: "10.3389/fonc.2025.1597750"
     supplementary_url: "https://public-pages-files-2025.frontiersin.org/articles/1597750/file/Table_1.xlsx/1597750_table_1/1"
@@ -34,5 +35,6 @@ datasets:
       baseline_phospho_ev5: "https://pmc.ncbi.nlm.nih.gov/articles/instance/10883282/bin/44320_2023_4_MOESM6_ESM.xlsx"
 
   depmap_broad:
+  # Drug Sensitivity Benchmarks (Ready)
     source: "https://depmap.org/portal/data_page/?tab=allData"
     local_path: "data/raw/GDSC2AUCMatrix.csv"
