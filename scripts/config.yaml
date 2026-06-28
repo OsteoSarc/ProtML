@@ -3,9 +3,9 @@ project_name: "osteosarcoma_proteomics_ml"
 
 # Directory Structure (Python will use this to ensure folders exist)
 directories:
-  raw_data: "data/01_raw"
-  mapped_data: "data/02_mapped"
-  processed_data: "data/03_processed"
+  raw_data: "data/raw"
+  mapped_data: "data/mapped"
+  processed_data: "data/processed"
   logs: "logs"
 
 # Primary Data Sources(proteomics, genomic and proteomic data sets to be added later)
@@ -22,7 +22,7 @@ datasets:
   # Chemo-Resistant Hub Proteins (Ready)
     source: "https://www.frontiersin.org/journals/oncology/articles/10.3389/fonc.2025.1597750/full"
     doi: "10.3389/fonc.2025.1597750"
-    supplementary_url: "https://public-pages-files-2025.frontiersin.org/articles/1597750/file/Table_1.xlsx/1597750_table_1/1"
+    local_path: "data/raw/EV3.xlsx"
     
   lee_phospho_drug:
   # Ready
@@ -32,7 +32,7 @@ datasets:
       # Drug response metrics(EV3). Total protein abundance(EV4). Phosphorylation state(EV5).
       local_path: "data/raw/EV3.xlsx"
       local_path: "data/raw/EV4.xlsx"
-      baseline_phospho_ev5: "data/raw/EV5.csv"
+      local_path: "data/raw/EV5.csv"
 
   depmap_broad:
   # Drug Sensitivity Benchmarks (Ready)
