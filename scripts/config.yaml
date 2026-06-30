@@ -12,10 +12,10 @@ directories:
 datasets:
   MassIVE:
   # Proteomics Discovery Data
-    # SENT AN EMAIL REQUESTING PUBLIC RELEASE TO MASSIVE(UCSD)
+    # Need to download all files under search tab and merge
     source: "https://www.mdpi.com/2073-4409/12/17/2179"
     project_accession: "MSV000091434"
-    api_endpoint: "https://massive.ucsd.edu/ProteoSAFe/static/massive.jsp?redirect=auth"
+    ftp_link: "ftp://massive-ftp.ucsd.edu/v05/MSV000091434/"
     target_extensions: [".txt", ".tsv", ".mzTab"] 
     
   zhang_chemoresponse:
