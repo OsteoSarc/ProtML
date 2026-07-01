@@ -15,6 +15,7 @@ datasets:
     # Need to download all files under search tab and merge
     source: "https://www.mdpi.com/2073-4409/12/17/2179"
     project_accession: "MSV000091434"
+    study_id: "PXD040681"
     ftp_link: "ftp://massive-ftp.ucsd.edu/v05/MSV000091434/"
     target_extensions: [".txt", ".tsv", ".mzTab"] 
     
@@ -22,7 +23,7 @@ datasets:
   # Chemo-Resistant Hub Proteins (Ready)
     source: "https://www.frontiersin.org/journals/oncology/articles/10.3389/fonc.2025.1597750/full"
     doi: "10.3389/fonc.2025.1597750"
-    local_path: "data/raw/EV3.xlsx"
+    local_path: "data/raw/table1.xlsx"
     
   lee_phospho_drug:
   # Ready
@@ -30,9 +31,9 @@ datasets:
     doi: "10.1038/s44320-023-00004-7"
     files:
       # Drug response metrics(EV3). Total protein abundance(EV4). Phosphorylation state(EV5).
-      local_path: "data/raw/EV3.xlsx"
-      local_path: "data/raw/EV4.xlsx"
-      local_path: "data/raw/EV5.csv"
+      drug_response_path: "data/raw/EV3.xlsx"
+      protein_abundance_path: "data/raw/EV4.xlsx"
+      phospho_path: "data/raw/EV5.csv"
 
   depmap_broad:
   # Drug Sensitivity Benchmarks (Ready)
