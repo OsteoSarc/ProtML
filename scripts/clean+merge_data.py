@@ -12,7 +12,8 @@ df_protein_trans = df_protein_trans.reset_index()
 
 # Merge both files
 df_final = pd.merge(df_clinical, df_protein_trans, on='Patient_ID', how='inner')
-df_final.to_csv('tableS1+S2.csv', index=False)
+df_final = df_final.replace('Ã¢â€°Â¥', '>=', regex=True)
+df_final.to_csv('data/processed/tableS1+S2.csv', index=False, na_rep='NULL')
 
 
 
