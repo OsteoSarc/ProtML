@@ -21,8 +21,7 @@ datasets:
   # Chemo-Resistant Hub Proteins
     source: "https://www.frontiersin.org/journals/oncology/articles/10.3389/fonc.2025.1597750/full"
     doi: "10.3389/fonc.2025.1597750"
-    local_path: "data/raw/EV3.xlsx"
-    local_path: "data/raw/table1.xlsx"
+    local_path: "data/raw/Zhang_table 1.xlsx"
 
   lee_phospho_drug:
   # Note: these are from cell lines not patient tumor samples
