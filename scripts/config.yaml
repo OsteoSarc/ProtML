@@ -16,7 +16,14 @@ datasets:
   tables:
     patient_info: "Table S1-Patient information and follow-up data.xlsx"
     protein_data: "Table S2-Proteins identified in proteomics analysis.csv"
-    
+  
+  zhang_chemoresponse:
+  # Chemo-Resistant Hub Proteins
+    source: "https://www.frontiersin.org/journals/oncology/articles/10.3389/fonc.2025.1597750/full"
+    doi: "10.3389/fonc.2025.1597750"
+    local_path: "data/raw/EV3.xlsx"
+    local_path: "data/raw/table1.xlsx"
+
   lee_phospho_drug:
   # Note: these are from cell lines not patient tumor samples
     source: "https://pmc.ncbi.nlm.nih.gov/articles/PMC10883282/"
