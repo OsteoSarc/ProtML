@@ -1,6 +1,14 @@
 import pandas as pd
 import numpy as np
 import mygene
+from scipy import stats
+from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.feature_selection import VarianceThreshold, SelectKBest
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegressionCV
+from sklearn.model_selection import LeaveOneOut, cross_val_predict
+from sklearn.metrics import roc_auc_score, balanced_accuracy_score, confusion_matrix
 
 # Loading Alaa Shotgun Data
 print("Loading raw datasets...")
@@ -64,3 +72,49 @@ print(f"Saved merged Alaa matrix to {output_path}")
 # Map poor responders as 1 and good responders as 0
 response_map = {"<90%": 1, ">=90%": 0}
 y = df_final["Histological_Response_to_Chemotherapy"].map(response_map)
+
+# Pull list of genes (column names of transposed protein data) and convert expression to float
+gene_cols = [c for c in df_protein_trans.columns if c != "Patient_ID"]
+X = df_final[gene_cols].astype(float)
+
+# Create a filter to remove genes missing in too many patients (threshold of 0.25)
+missing_frac = X.isna().mean(axis=0)
+X = X.loc[:, missing_frac <= 0.25]
+print(f"Genes remaining after absence of data filter: {X.shape[1]}")
+
+X_arr = X.values
+y_arr = y.values
+
+# Calculate Mann-Whitney score to rank each gene by how differently it behaves between good vs poor responders
+def mannwhitney_score(X_mat, y_vec):
+    group0 = y_vec == 0
+    group1 = y_vec == 1
+    _, p_values = stats.mannwhitneyu(X_mat[group0], X_mat[group1], axis=0, alternative="two-sided")
+    return -p_values
+
+top_n_genes = 100
+
+# Pipeline to group preprocessing and model so each step refits per fold and avoids leakage
+pipeline = Pipeline([
+    ("impute", SimpleImputer(strategy="median")), # Fill missing values with each gene's median
+    ("variance_filter", VarianceThreshold(threshold=0.0)), # Drop genes with zero variance (no info)
+    ("univariate_select", SelectKBest(score_func = mannwhitney_score, k = top_n_genes)), # Keep top 100 most different genes in group
+    ("scale", StandardScaler()), # Standardize genes to mean 0 and std 1
+    ("classify", LogisticRegressionCV( # L1-regularized logistic regression to handle class imbalance
+        Cs = 10, 
+        cv = 5, 
+        penalty = "l1", 
+        solver = "liblinear",
+        class_weight = "balanced", 
+        max_iter = 5000, 
+        random_state = 0
+        )
+    )
+])
+
+loo = LeaveOneOut()
+
+print("Running Pipeline...")
+# Run LOOCV twice: once for hard 0/1 predictions and once for probabilities (needed for AUC)
+y_pred = cross_val_predict(pipeline, X_arr, y_arr, cv=loo, method="predict")
+y_proba = cross_val_predict(pipeline, X_arr, y_arr, cv=loo, method="predict_proba")[:, 1]
