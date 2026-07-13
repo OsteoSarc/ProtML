@@ -7,8 +7,9 @@ from sklearn.impute import SimpleImputer
 from sklearn.feature_selection import VarianceThreshold, SelectKBest
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegressionCV
-from sklearn.model_selection import LeaveOneOut, cross_val_predict
+from sklearn.model_selection import LeaveOneOut
 from sklearn.metrics import roc_auc_score, balanced_accuracy_score, confusion_matrix
+from sklearn.base import clone
 
 # Loading Alaa Shotgun Data
 print("Loading raw datasets...")
@@ -113,8 +114,44 @@ pipeline = Pipeline([
 ])
 
 loo = LeaveOneOut()
-
 print("Running Pipeline...")
 # Run LOOCV twice: once for hard 0/1 predictions and once for probabilities (needed for AUC)
-y_pred = cross_val_predict(pipeline, X_arr, y_arr, cv=loo, method="predict")
-y_proba = cross_val_predict(pipeline, X_arr, y_arr, cv=loo, method="predict_proba")[:, 1]
+# Show diagnostics for each fold as pipeline runs
+y_pred = np.zeros(len(y_arr))
+y_proba = np.zeros(len(y_arr))
+
+for fold_num, (train_idx, test_idx) in enumerate(loo.split(X_arr)):
+    X_train, X_test = X_arr[train_idx], X_arr[test_idx]
+    y_train = y_arr[train_idx]
+
+    print(f"Fold {fold_num}: X_train={X_train.shape}, X_test={X_test.shape}, y_train balance={np.bincount(y_train)}")
+
+    fold_pipeline = clone(pipeline)
+    fold_pipeline.fit(X_train, y_train)
+
+    y_pred[test_idx] = fold_pipeline.predict(X_test)
+    y_proba[test_idx] = fold_pipeline.predict_proba(X_test)[:, 1]
+
+
+# Create metric scores using pipeline results
+auc = roc_auc_score(y_arr, y_proba)
+bal_acc = balanced_accuracy_score(y_arr, y_pred)
+tn, fp, fn, tp = confusion_matrix(y_arr, y_pred).ravel()
+
+print(f"LOOCV AUC: {auc:.3f}")
+print(f"LOOCV Balanced Accuracy: {bal_acc:.3f}")
+print(f"Sensitivity: {tp / (tp + fn):.3f}")
+print(f"Specificity: {tn / (tn + fp):.3f}")
+
+# Bootstrap 95% CI on AUC
+n_boot = 2000
+rng = np.random.RandomState(0)
+boot_aucs = []
+n = len(y_arr)
+for _ in range(n_boot):
+    idx = rng.choice(n, size=n, replace=True)
+    if len(np.unique(y_arr[idx])) < 2:
+        continue
+    boot_aucs.append(roc_auc_score(y_arr[idx], y_proba[idx]))
+ci_low, ci_high = np.percentile(boot_aucs, [2.5, 97.5])
+print(f"Bootstrap 95% CI for AUC: [{ci_low:.3f}, {ci_high:.3f}]")
